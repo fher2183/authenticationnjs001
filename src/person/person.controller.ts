@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import { PersonService, Person } from './person.service';
-import { UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { PersonService } from './person.service';
 import { AuthGuard } from '@nestjs/passport';
 
 @UseGuards(AuthGuard('jwt'))
@@ -9,12 +8,27 @@ export class PersonController {
   constructor(private readonly personService: PersonService) {}
 
   @Get()
-  getAll(): Person[] {
+  getAll() {
     return this.personService.findAll();
   }
 
+  @Get(':id')
+  getOne(@Param('id') id: number) {
+    return this.personService.findOne(id);
+  }
+
   @Post()
-  create(@Body() body: { name: string; age: number }): { ok: boolean } {
+  create(@Body() body: any) {
     return this.personService.create(body);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: number, @Body() body: any) {
+    return this.personService.update(id, body);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.personService.remove(id);
   }
 }

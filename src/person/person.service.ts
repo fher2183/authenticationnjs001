@@ -1,29 +1,35 @@
 import { Injectable } from '@nestjs/common';
-
-export interface Person {
-  id: number;
-  name: string;
-  age: number;
-}
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Person } from './person.entity';
 
 @Injectable()
 export class PersonService {
-  private persons: Person[] = [
-    { id: 1, name: 'Juan', age: 30 },
-    { id: 2, name: 'Ana', age: 25 },
-    { id: 3, name: 'Luis', age: 40 },
-  ];
+  constructor(
+    @InjectRepository(Person)
+    private readonly personRepository: Repository<Person>,
+  ) {}
 
-  findAll(): Person[] {
-    return this.persons;
+  findAll(): Promise<Person[]> {
+    return this.personRepository.find();
   }
 
-  create(person: Omit<Person, 'id'>): { ok: boolean } {
-    const newPerson: Person = {
-      id: this.persons.length + 1,
-      ...person,
-    };
-    this.persons.push(newPerson);
-    return { ok: true };
+  findOne(id: number): Promise<Person | null> {
+    return this.personRepository.findOneBy({ id });
+  }
+
+  create(data: Partial<Person>): Promise<Person> {
+    const person = this.personRepository.create(data);
+    return this.personRepository.save(person);
+  }
+
+  async update(id: number, data: Partial<Person>): Promise<Person | null> {
+    await this.personRepository.update(id, data);
+    return this.findOne(id);
+  }
+
+  async remove(id: number): Promise<boolean> {
+    const result = await this.personRepository.delete(id);
+    return result.affected !== 0;
   }
 }
