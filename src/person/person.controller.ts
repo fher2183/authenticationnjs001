@@ -1,11 +1,24 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
+// ...existing code...
+// ...existing code...
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { AuthGuard } from '@nestjs/passport';
+import { CreatePersonDto } from './dto/create-person.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('person')
 export class PersonController {
   constructor(private readonly personService: PersonService) {}
+
+  @Post('search')
+  searchByBody(@Body('term') term: string) {
+    return this.personService.searchByName(term);
+  }
+
+  @Get('search/:term')
+  search(@Param('term') term: string) {
+    return this.personService.searchByName(term);
+  }
 
   @Get()
   getAll() {
@@ -18,12 +31,14 @@ export class PersonController {
   }
 
   @Post()
-  create(@Body() body: any) {
+  @UsePipes(new ValidationPipe())
+  create(@Body() body: CreatePersonDto) {
     return this.personService.create(body);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() body: any) {
+  @UsePipes(new ValidationPipe())
+  update(@Param('id') id: number, @Body() body: CreatePersonDto) {
     return this.personService.update(id, body);
   }
 

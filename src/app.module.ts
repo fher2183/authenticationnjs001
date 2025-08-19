@@ -5,6 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { PersonModule } from './person/person.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EmailModule } from './email/email.module';
+import { PhoneModule } from './phone/phone.module';
 
 @Module({
   imports: [
@@ -23,8 +25,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
       inject: [ConfigService],
     }),
-    AuthModule,
-    PersonModule,
+  AuthModule,
+  PersonModule,
+  EmailModule,
+  PhoneModule,
   ],
   controllers: [AppController],
   providers: [AppService],

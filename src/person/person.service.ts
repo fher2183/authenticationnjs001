@@ -1,3 +1,4 @@
+// ...existing code...
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,8 +15,8 @@ export class PersonService {
     return this.personRepository.find();
   }
 
-  findOne(id: number): Promise<Person | null> {
-    return this.personRepository.findOneBy({ id });
+  findOne(idperson: number): Promise<Person | null> {
+    return this.personRepository.findOneBy({ idperson });
   }
 
   create(data: Partial<Person>): Promise<Person> {
@@ -23,13 +24,21 @@ export class PersonService {
     return this.personRepository.save(person);
   }
 
-  async update(id: number, data: Partial<Person>): Promise<Person | null> {
-    await this.personRepository.update(id, data);
-    return this.findOne(id);
+  async update(idperson: number, data: Partial<Person>): Promise<Person | null> {
+    await this.personRepository.update(idperson, data);
+    return this.findOne(idperson);
   }
 
-  async remove(id: number): Promise<boolean> {
-    const result = await this.personRepository.delete(id);
+  async remove(idperson: number): Promise<boolean> {
+    const result = await this.personRepository.delete(idperson);
     return result.affected !== 0;
+  }
+
+  async searchByName(term: string): Promise<Person[]> {
+    return this.personRepository.createQueryBuilder('person')
+      .where('person.firstname LIKE :term', { term: `%${term}%` })
+      .orWhere('person.middlename LIKE :term', { term: `%${term}%` })
+      .orWhere('person.lastname LIKE :term', { term: `%${term}%` })
+      .getMany();
   }
 }
