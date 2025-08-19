@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { Email } from '../email/email.entity';
 import { Phone } from '../phone/phone.entity';
+import { Address } from '../address/address.entity';
 
 
 @Entity()
@@ -26,6 +27,9 @@ export class Person {
 
   @OneToMany(() => Phone, phone => phone.person)
   phones: Phone[];
+
+  @OneToMany(() => Address, address => address.person)
+  addresses: Address[];
 
   @Column({ default: true })
   status: boolean;

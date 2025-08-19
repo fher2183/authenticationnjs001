@@ -1,3 +1,5 @@
+import { AddressModule } from './address/address.module';
+import { CountryModule } from './country/country.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -29,6 +31,8 @@ import { PhoneModule } from './phone/phone.module';
   PersonModule,
   EmailModule,
   PhoneModule,
+  AddressModule,
+  CountryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
