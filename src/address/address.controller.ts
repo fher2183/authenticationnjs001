@@ -1,12 +1,16 @@
 import { Controller, Post, Get, Delete, Param, Body } from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AddressService } from './address.service';
+import { CreateAddressDto } from './dto/create-address.dto';
 
+@ApiTags('address')
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
   @Post()
-  create(@Body() body: { street: string; zone: number; city: string; countryId: number; idperson: number }) {
+  @ApiBody({ type: CreateAddressDto })
+  create(@Body() body: CreateAddressDto) {
     return this.addressService.create(body);
   }
 
