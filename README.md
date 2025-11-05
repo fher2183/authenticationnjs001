@@ -157,3 +157,7 @@ $ npm run test:cov
 ## License
 
 This project is [MIT licensed](LICENSE).
+
+---
+
+**Autor: Fernando Martinez**
